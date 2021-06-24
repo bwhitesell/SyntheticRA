@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class RedditSearchIOAPIClient:
     """
-        A client to handle retrieval of r/relationship_advice posts from the
+        A client to handle retrieval of subreddit posts from the
         redditsearch.io api
 
         Supports direct post search between fixed time intervals.
@@ -23,7 +23,8 @@ class RedditSearchIOAPIClient:
     _HEADERS: Dict[str, str] = {'User-Agent': 'Mozilla/5.0'}
     _MINIMUM_MS_BETWEEN_REQUESTS: int = 2000
 
-    def __init__(self) -> None:
+    def __init__(self, subreddit: str = 'relationship_advice') -> None:
+        self.subreddit: str = subreddit
         self._last_request_sent_time: dt = dt.now()
 
     def find_posts(
@@ -63,6 +64,7 @@ class RedditSearchIOAPIClient:
     ) -> str:
 
         request_url: str = REDDIT_IO_BASE_SEARCH_URL
+        request_url += f'&subreddit={self.subreddit}'
         request_url += (
             f'&after={interval_start_unix}&'
             f'before={interval_end_unix}'
@@ -71,9 +73,11 @@ class RedditSearchIOAPIClient:
         return request_url
 
 
-class RedditSearchIOPostScan:
+class SubredditPostScan:
     """
-        A 'scanning' strategy to find posts from redditsearch.io.
+        A 'scanning' strategy to find posts from a given subreddit using the
+        redditsearch.io internal api.
+
         The redditsearch.io api isn't obviously exhausive, no more than 100
         posts can be returned in a single request, always returning by sort
         order, which the client specifies as popular.
@@ -83,9 +87,14 @@ class RedditSearchIOPostScan:
         likely the request is to return popular posts.
     """
 
-    def __init__(self, scan_start: dt = _2020, interval_hrs: int = 24) -> None:
+    def __init__(
+        self,
+        subreddit: str,
+        scan_start: dt = _2020,
+        interval_hrs: int = 24
+    ) -> None:
 
-        self.client = RedditSearchIOAPIClient()
+        self.client = RedditSearchIOAPIClient(subreddit=subreddit)
         self._scan_dt: dt = scan_start
         self.scan_interval_hrs: int = interval_hrs
 
