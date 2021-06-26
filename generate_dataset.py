@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+""" A cli tool to build datasets without writhout writing code. """
 
 import argparse
 import logging

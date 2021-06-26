@@ -1,13 +1,13 @@
 import csv
 import logging
-from synthetic_ra.data.client import RedditSearchIOPostScan
+from synthetic_ra.data.client import SubredditPostScan 
 
 
 logger = logging.getLogger(__name__)
 
 
 def generate_dataset(save_path: str, n_posts: int,
-                     scan: RedditSearchIOPostScan) -> None:
+                     scan: SubredditPostScan) -> None:
 
     logger.info(
         'Generating new RA dataset. \n'
