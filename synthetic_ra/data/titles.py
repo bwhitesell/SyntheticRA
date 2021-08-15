@@ -6,6 +6,8 @@ from torchtext.vocab import Vocab
 import torch
 from typing import List, Union
 
+from synthetic_ra.data.constants import PAD_TOKEN
+
 
 tokenizer = get_tokenizer('basic_english')
 
@@ -31,7 +33,7 @@ class RAPostTitle:
         )
 
         clamped_encoded_title += (
-            [PAD_TOKEN] * (self.fixed_encoded_len - len(clamped_encoded_title))
+            [vocab.stoi[PAD_TOKEN]] * (self.fixed_encoded_len - len(clamped_encoded_title))
         )
 
         return torch.tensor(clamped_encoded_title, dtype=torch.long)
@@ -42,7 +44,7 @@ class RAPostTitle:
 
         title: str = self.title_text.lower()
         # the informal RA syntax treats brackets and parens identically.
-        title: str = self.title.replace('[', '(').replace(']', ')')
+        title: str = title.replace('[', '(').replace(']', ')')
         # separate sequences of numerical tokens with spaces for tokenizer.
         title: str = re.sub("[A-Za-z]+", lambda ele: " " + ele[0] + " ", title)
         return title

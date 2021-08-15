@@ -22,6 +22,7 @@ def xavier_init(tensor):
 
 def build_vocab_w_glove_init_from_post_titles(
     titles: List[RAPostTitle],
+    max_read_samples: int = 100000,
     extra_tokens: List[str] = [START_TOKEN, END_TOKEN, PAD_TOKEN],
 ) -> GloVe:
     """
@@ -33,19 +34,32 @@ def build_vocab_w_glove_init_from_post_titles(
     counter: Counter = Counter()
     counter.update(extra_tokens)
 
-    for title in titles:
-        counter.update(title.tokenized_title_text)
+    with open(str(dataset_file), 'r') as dataset_file:
+        reader = csv.reader(dataset_file)
+        headers: List[str] = next(reader)
+        t: int = 0
 
-    vocab: Vocab = Vocab(counter)
+        while t < max_read_samples:
 
-    glove_vecs: torch.Tensor = torch.zeros(len(vocab), GLOVE_EMB_SIZE)
+
     glove_vocab: GloVe = GloVe(
         name='6B',
         dim=GLOVE_EMB_SIZE,
         unk_init=xavier_init
     )
 
-    for word in vocab.itos:
-        glove_vecs[vocab.stoi[word]] = glove_vocab[word]
 
-    return vocab, glove_vecs
+    # add our extra tokens in.
+    for token in extra_tokens:
+        with torch.no_grad():
+            glove_vocab.stoi[token] = len(glove_vocab.itos)
+            glove_vocab.itos.append(token)
+            glove_vocab.vectors: torch.Tensor = torch.cat(
+                (
+                    glove_vocab.vectors,
+                    torch.nn.Embedding(1, GLOVE_EMB_SIZE).weight,
+                ),
+                axis=0,
+            )
+
+    return glove_vocab
