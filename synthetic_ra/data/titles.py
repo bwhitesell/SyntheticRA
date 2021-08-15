@@ -33,7 +33,8 @@ class RAPostTitle:
         )
 
         clamped_encoded_title += (
-            [vocab.stoi[PAD_TOKEN]] * (self.fixed_encoded_len - len(clamped_encoded_title))
+            [vocab.stoi[PAD_TOKEN]] *
+            (self.fixed_encoded_len - len(clamped_encoded_title))
         )
 
         return torch.tensor(clamped_encoded_title, dtype=torch.long)

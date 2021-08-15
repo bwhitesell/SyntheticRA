@@ -26,6 +26,6 @@ class RATitleDataset(Dataset):
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor]:
 
         title: RAPostTitle = self._ra_titles[idx]
-        encoded_title: torch.Tensor = title.encoded_title
+        encoded_title: torch.Tensor = title.encoded_title(self._vocab)
 
         return encoded_title[:-1], encoded_title[1:]
