@@ -1,0 +1,18 @@
+from torch.utils.data import Dataset
+from torchtext.vocab import GloVe
+from torchtext.vocab import Vocab
+from typing import List, Union
+
+from synthetic_ra.data.titles import RAPostTitle
+
+
+class RATitleDataset(Dataset):
+
+    def __init__(self,
+        ra_titles: List[RAPostTitle],
+        vocab: Union[Vocab, GloVe],
+    ) -> None:
+
+        self._ra_titles: List[RAPostTitle] = ra_titles
+        self._vocab: Union[Vocab, GloVe] = vocab
+

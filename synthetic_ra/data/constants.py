@@ -1,6 +1,7 @@
 from datetime import datetime
 
 
+# CLIENT CONSTANTS
 RA_SUBREDDIT_NAME: str = 'relationship_advice'
 
 REDDIT_IO_BASE_SEARCH_URL: str = (
@@ -10,3 +11,9 @@ REDDIT_IO_BASE_SEARCH_URL: str = (
 )
 
 _2020: datetime = datetime(2020, 1, 1)
+
+
+# ENCODING CONSTANTS
+START_TOKEN: str = '<start>'
+END_TOKEN: str = '<end>'
+PAD_TOKEN: str = '<pad>'

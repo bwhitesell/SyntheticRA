@@ -113,6 +113,7 @@ class SubredditPostScan:
                 f'Unable to pull posts for search range: {self._scan_dt} '
                 f'to {self.scan_interval_end}'
             )
+            return
 
         self._scan_dt = self.scan_interval_end
 
