@@ -7,6 +7,8 @@ import torch
 from typing import List, Union
 
 from synthetic_ra.data.constants import PAD_TOKEN
+from synthetic_ra.data.constants import START_TOKEN
+from synthetic_ra.data.constants import END_TOKEN
 
 
 tokenizer = get_tokenizer('basic_english')
@@ -29,7 +31,7 @@ class RAPostTitle:
         ]
 
         clamped_encoded_title: List[int] = (
-            full_encoded_title[:(self.fixed_encoded_len - 1)]
+            capped_full_encoded_title[:(self.fixed_encoded_len - 1)]
         )
 
         clamped_encoded_title += (
@@ -54,4 +56,6 @@ class RAPostTitle:
     def tokenized_title_text(self) -> List[str]:
         """ Apply a tokenizer to cleaned title text. """
 
-        return tokenizer(self.cleaned_title_text)
+        return tokenizer(
+            f'{START_TOKEN} {self.cleaned_title_text} {END_TOKEN}'
+        )
